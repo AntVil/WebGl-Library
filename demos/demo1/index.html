@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>webgl</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+    <div id="background">
+        <canvas id="can"></canvas>
+    </div>
+
+    <script id="vertexShader" type="x-shader/x-fragment">
+		precision mediump float;
+
+		attribute vec2 vertPosition;
+		attribute vec3 vertColor;
+		varying vec3 fragColor;
+		
+		void main(){
+            fragColor = vertColor;
+			gl_Position = vec4(vertPosition, 1.0, 1.0);
+		}
+	</script>
+    <script id="fragmentShader" type="x-shader/x-fragment">
+		precision mediump float;
+		
+		varying vec3 fragColor;
+
+		void main(){
+			gl_FragColor = vec4(fragColor, 1.0);
+		}
+	</script>
+
+	<script src="/WebGl-Library/src/WebGl-Library.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
