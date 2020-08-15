@@ -1,0 +1,18 @@
+
+
+-create Context -> using canvas
+-create Cameras (orthographic/stereographic)
+-provide JSON's for input
+-add Objects
+
+-supply attribute, uniform & texture inputs (JSON's)
+
+-draw Objects to canvas
+-draw Objects to texture
+
+-supply matrix-math-object
+
+
+-world-martix -> transform object
+-view-matirx -> transform camera
+-projection-matrix -> project verticies
