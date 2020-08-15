@@ -228,7 +228,7 @@ function WebGlContext(canvas) {
 
     this.addElement = function (element, vertexShaderSrc, fragmentShaderSrc) {
         element.program = this.createProgram(vertexShaderSrc, fragmentShaderSrc);
-        this.elements.addElement(element);
+        this.elements.push(element);
     }
 
     this.renderElement = function (element) {
