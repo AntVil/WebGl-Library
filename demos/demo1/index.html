@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width" />
     <title>WebGl-Library - demo 1</title>
 	<link rel="stylesheet" href="style.css" />
-	
-	<script type="text/javascript" src="https://htcryme.github.io/WebGl-Library/src/WebGl-Library.js"></script>
 </head>
 
 <body>
@@ -22,10 +20,12 @@
 		attribute vec2 vertPosition;
 		attribute vec3 vertColor;
 		varying vec3 fragColor;
+
+		uniform mat4 projectionMatrix;
 		
 		void main(){
             fragColor = vertColor;
-			gl_Position = vec4(vertPosition, 1.0, 1.0);
+			gl_Position = projectionMatrix * vec4(vertPosition, 1.0, 1.0);
 		}
 	</script>
     <script id="fragmentShader" type="x-shader/x-fragment">
@@ -38,7 +38,7 @@
 		}
 	</script>
 
-	
+	<script type="text/javascript" src="https://htcryme.github.io/WebGl-Library/src/WebGl-Library.js"></script>
     <script type="text/javascript" src="script.js"></script>
 </body>
 
