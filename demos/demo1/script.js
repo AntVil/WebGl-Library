@@ -5,8 +5,9 @@ var element;
 
 function adjustScreen() {
     can = document.getElementById("canvas");
-    can.width = can.height = Math.min(window.innerWidth, window.innerHeight);
-    c = WebGlContext(can);
+    can.width = Math.min(window.innerWidth, window.innerHeight);
+    can.height = can.width;
+    c = new WebGlContext(can);
 }
 
 window.onresize = function () {
