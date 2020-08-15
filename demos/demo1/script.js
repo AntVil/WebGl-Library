@@ -32,7 +32,7 @@ window.onload = function () {
         -0.5, -0.25, 0.0, 0.0, 1.0
     ];
 
-    element.indicies = [1, 2, 3];
+    element.indicies = [0, 1, 2];
 
     var vertexShaderSrc = document.getElementById("vertexShader").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShader").innerHTML;
