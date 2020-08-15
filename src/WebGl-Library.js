@@ -146,7 +146,7 @@ function WebGlContext(canvas) {
 
     this.adjustScreen = function () {
         this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
-        this.c.viewport(0, 0, this.can.width, this.can.height);
+        this.c.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
     this.clearColor = function (r, g, b, a) {
@@ -205,7 +205,7 @@ function WebGlContext(canvas) {
             xRotation: 0,
             yRotation: 0,
             zRotation: 0,
-            projectionMatrix: this.MatrixMath.orthographic(-1, 1, -1, 1, 0, 100)
+            projectionMatrix: this.MatrixMath.orthographic(-1, 1, -1, 1, -1, 1)
         }
     }
 
