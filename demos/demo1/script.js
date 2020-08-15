@@ -7,7 +7,11 @@ function adjustScreen() {
     can = document.getElementById("canvas");
     can.width = Math.min(window.innerWidth, window.innerHeight);
     can.height = can.width;
-    c = new WebGlContext(can);
+    if(c == null){
+        c = new WebGlContext(can);
+    }else{
+        c.adjustScreen();
+    }
 }
 
 window.onresize = function () {
@@ -17,8 +21,10 @@ window.onresize = function () {
 window.onload = function () {
     adjustScreen();
 
-    c.clearColor(0.0, 0.0, 0.0, 0.0);
+    //setting the background color to black
+    c.clearColor(0.0, 0.0, 0.0, 1.0);
 
+    //creating an element and giving it all the needed information 
     element = c.createElement();
 
     element.attributes = [
@@ -34,11 +40,14 @@ window.onload = function () {
 
     element.indicies = [0, 1, 2];
 
+    //adding shaders to element and adding element to the internal list of elements
     var vertexShaderSrc = document.getElementById("vertexShader").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShader").innerHTML;
     c.addElement(element, vertexShaderSrc, fragmentShaderSrc);
 
+    //clear screen
     c.clear();
 
+    //render to screen
     c.renderFrame();
 }
