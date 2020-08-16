@@ -197,6 +197,26 @@ function WebGlContext(canvas) {
         }
     }
 
+    this.setTextureToImage = function (uniform, imageUrl) {
+        var image = new Image();
+        if ((new URL(imageUrl, window.location.href)).origin !== window.location.origin) {
+            image.crossOrigin = "";
+        }
+        image.src = imageUrl;
+        image.c = this.c;
+        
+        image.onload = function(){
+            this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
+            
+            this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
+            this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
+            this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
+            this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
+
+            this.c.texImage2D(this.c.TEXTURE_2D, 0, this.c.RGBA, this.c.RGBA, this.c.UNSIGNED_BYTE, image);
+        }
+    }
+
     this.createCamera = function () {
         return {
             x: 0,
