@@ -220,7 +220,12 @@ function WebGlContext(canvas) {
     this.setTexture = function (uniform, width, height, data){
         this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
-        this.c.texImage2D(this.c.TEXTURE_2D, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, new Uint8Array(data));
+        if(data === null){
+            this.c.texImage2D(this.c.TEXTURE_2D, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, null);
+        }else{
+            this.c.texImage2D(this.c.TEXTURE_2D, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, new Uint8Array(data));
+        }
+        
 
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
@@ -327,11 +332,39 @@ function WebGlContext(canvas) {
     }
 
     this.renderElementToTexture = function (element, uniformTexture) {
+        var frameBuffer = this.c.createFrameBuffer();
+        this.c.bindFramebuffer(this.c.FRAMEBUFFER, frameBuffer);
+        this.c.framebufferTexture2D(this.c.FRAMEBUFFER, this.c.COLOR_ATTACHMENT0, this.c.TEXTURE_2D, uniformTexture.texture, 0);
 
+        var depthBuffer = this.c.createRenderbuffer();
+        this.c.bindRenderbuffer(this.c.RENDERBUFFER, depthBuffer);
+        this.c.renderbufferStorage(this.c.RENDERBUFFER, this.c.DEPTH_COMPONENT16, uniformTexture.width, uniformTexture.height);
+        this.c.framebufferRenderbuffer(this.c.FRAMEBUFFER, this.c.DEPTH_ATTACHMENT, this.c.RENDERBUFFER, depthBuffer);
+
+        this.c.viewport(0, 0, uniformTexture.width, uniformTexture.height);
+
+        this.renderElement(element);
+
+        this.c.bindFramebuffer(this.c.FRAMEBUFFER, null);
+        this.adjustScreen();
     }
 
-    this.renderElementsToTexture = function (uniformTexture) {
+    this.renderFrameToTexture = function (uniformTexture) {
+        var frameBuffer = this.c.createFrameBuffer();
+        this.c.bindFramebuffer(this.c.FRAMEBUFFER, frameBuffer);
+        this.c.framebufferTexture2D(this.c.FRAMEBUFFER, this.c.COLOR_ATTACHMENT0, this.c.TEXTURE_2D, uniformTexture.texture, 0);
 
+        var depthBuffer = this.c.createRenderbuffer();
+        this.c.bindRenderbuffer(this.c.RENDERBUFFER, depthBuffer);
+        this.c.renderbufferStorage(this.c.RENDERBUFFER, this.c.DEPTH_COMPONENT16, uniformTexture.width, uniformTexture.height);
+        this.c.framebufferRenderbuffer(this.c.FRAMEBUFFER, this.c.DEPTH_ATTACHMENT, this.c.RENDERBUFFER, depthBuffer);
+
+        this.c.viewport(0, 0, uniformTexture.width, uniformTexture.height);
+
+        this.renderFrame();
+
+        this.c.bindFramebuffer(this.c.FRAMEBUFFER, null);
+        this.adjustScreen();
     }
 
 
