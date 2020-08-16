@@ -181,10 +181,9 @@ function WebGlContext(canvas) {
             return {
                 name: name,
                 type: type,
-                level: 0,
                 width: 0,
                 height: 0,
-                data: new Uint8Array(),
+                data: null,
                 texture: this.c.createTexture(),
                 value: this.textureUnit,
             };
@@ -204,9 +203,12 @@ function WebGlContext(canvas) {
         }
         image.src = imageUrl;
         image.c = this.c;
+        image.uniform = uniform;
         
         image.onload = function(){
-            this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
+            this.uniform.width = this.width;
+            this.uniform.height = this.height;
+            this.c.bindTexture(this.c.TEXTURE_2D, this.uniform.texture);
             
             this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
             this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
@@ -220,6 +222,8 @@ function WebGlContext(canvas) {
     this.setTexture = function (uniform, width, height, data){
         this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
+        uniform.width = width;
+        uniform.height = height;
         if(data === null){
             this.c.texImage2D(this.c.TEXTURE_2D, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, null);
         }else{
