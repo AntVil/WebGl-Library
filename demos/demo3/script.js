@@ -79,6 +79,16 @@ window.onload = function () {
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement2").innerHTML;
     c.addElement(element2, vertexShaderSrc, fragmentShaderSrc);
 
+    loop();
+}
+
+function loop(){
+    //clear screen
     c.clear();
+
+    //render to screen
     c.renderFrame();
+
+    //restart loop
+    requestAnimationFrame(loop);
 }
