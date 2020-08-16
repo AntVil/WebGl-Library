@@ -1,9 +1,7 @@
 var can
 var c;
 
-
-var element1;
-var element2;
+var element;
 
 var frame = 0;
 
@@ -27,55 +25,34 @@ window.onload = function () {
 
     c.clearColor(0.0, 0.0, 0.0, 0.0);
 
-    element1 = c.createElement();
-    element1.attributes = [
+    element = c.createElement();
+    element.attributes = [
         c.createAttribute("vertPosition", 2),
         c.createAttribute("texturePosition", 2),
     ];
-    element1.uniforms = [
-        c.createUniform("texture", "sampler2D")
+    element.uniforms = [
+        c.createUniform("texture", "sampler2D"),
+        c.createUniform("projectionMatrix", "mat4")
     ];
     c.setTextureToImage(element1.uniforms[0], "DogPicture.jpeg");
 
-    element1.vertices = [
-        -1, -0.5, 0, 1,
-        0, -0.5, 1, 1,
-        -1, 0.5, 0, 0,
-        0, 0.5, 1, 0
+    element.vertices = [
+        -0.5, -0.5, 0, 1,
+        0.5, -0.5, 1, 1,
+        -0.5, 0.5, 0, 0,
+        0.5, 0.5, 1, 0
     ];
-    element1.indicies = [
+    element.indicies = [
         0, 1, 2,
         2, 1, 3
     ];
 
-    var vertexShaderSrc = document.getElementById("vertexShaderElement1").innerHTML;
-    var fragmentShaderSrc = document.getElementById("fragmentShaderElement1").innerHTML;
+    var vertexShaderSrc = document.getElementById("vertexShaderElement").innerHTML;
+    var fragmentShaderSrc = document.getElementById("fragmentShaderElement").innerHTML;
     c.addElement(element1, vertexShaderSrc, fragmentShaderSrc);
 
 
-    element2 = c.createElement();
-    element2.attributes = [
-        c.createAttribute("vertPosition", 2),
-        c.createAttribute("texturePosition", 2),
-    ];
-    element2.uniforms = [
-        element1.uniforms[0]
-    ];
-
-    element2.vertices = [
-        0, -0.5, 0, 1,
-        1, -0.5, 1, 1,
-        0, 0.5, 0, 0,
-        1, 0.5, 1, 0
-    ];
-    element2.indicies = [
-        0, 1, 2,
-        2, 1, 3
-    ];
-
-    var vertexShaderSrc = document.getElementById("vertexShaderElement2").innerHTML;
-    var fragmentShaderSrc = document.getElementById("fragmentShaderElement2").innerHTML;
-    c.addElement(element2, vertexShaderSrc, fragmentShaderSrc);
+    
 
     frame = 0;
     loop();
@@ -83,6 +60,17 @@ window.onload = function () {
 
 function loop() {
     c.clear();
+
+    var array = [];
+    for(var i=0;i<10;i++){
+        for(var j=0;j<10;j++){
+            var val = Math.sin((i + j + frame)/100);
+            array.push(val, val, val, val);
+        }
+    }
+
+    c.setTexture(element.uniforms[0], 10, 10, array);
+    element.uniforms[1] = c.MatrixMath.yRotation(frame/300);
 
     c.renderFrame();
 
