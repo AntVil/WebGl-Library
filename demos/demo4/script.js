@@ -34,7 +34,7 @@ window.onload = function () {
         c.createUniform("texture", "sampler2D"),
         c.createUniform("projectionMatrix", "mat4")
     ];
-    c.setTextureToImage(element1.uniforms[0], "DogPicture.jpeg");
+    c.setTextureToImage(element.uniforms[0], "DogPicture.jpeg");
 
     element.vertices = [
         -0.5, -0.5, 0, 1,
@@ -49,10 +49,7 @@ window.onload = function () {
 
     var vertexShaderSrc = document.getElementById("vertexShaderElement").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement").innerHTML;
-    c.addElement(element1, vertexShaderSrc, fragmentShaderSrc);
-
-
-    
+    c.addElement(element, vertexShaderSrc, fragmentShaderSrc);
 
     frame = 0;
     loop();
