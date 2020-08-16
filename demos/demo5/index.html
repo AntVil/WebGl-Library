@@ -22,7 +22,7 @@
 
 		varying vec2 textureCoordinate;
 
-		unifrom mat4 rotationMatrix;
+		uniform mat4 rotationMatrix;
         uniform mat4 projectionMatrix;
 		
 		void main(){
@@ -30,7 +30,7 @@
 			gl_Position = projectionMatrix * rotationMatrix * vec4(vertPosition, 0.0, 1.0);
 		}
 	</script>
-    <script id="fragmentShaderElement1" type="x-shader/x-fragment">
+    <script id="fragmentShaderElement" type="x-shader/x-fragment">
 		precision mediump float;
 		
         varying vec2 textureCoordinate;
