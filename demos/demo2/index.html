@@ -25,7 +25,7 @@
         uniform mat4 projectionMatrix;
 		
 		void main(){
-            fragColor = vertPosition;
+            fragColor = (vertPosition + vec3(1.0, 1.0, 1.0)) / 2.0;
 			gl_Position = projectionMatrix * rotationMatrix * vec4(vertPosition, 1.0);
 		}
 	</script>

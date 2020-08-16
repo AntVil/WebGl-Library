@@ -7,7 +7,7 @@ function adjustScreen() {
     can = document.getElementById("canvas");
     can.width = Math.min(window.innerWidth, window.innerHeight);
     can.height = can.width;
-    if(c == null){
+    if(c === undefined){
         c = new WebGlContext(can);
     }else{
         c.adjustScreen();
