@@ -281,7 +281,8 @@ function WebGlContext(canvas) {
             }
         }
 
-        var projectionMatrix = this.MatrixMath.mult(element.camera.projectionMatrix, this.MatrixMath.translation(-element.camera.x, -element.camera.y, -element.camera.z));
+        var transformedMatrix = this.MatrixMath.mult(this.MatrixMath.mult(this.MatrixMath.mult(this.MatrixMath.yRotation(element.camera.yRotation), this.MatrixMath.xRotation(element.camera.xRotation)), this.MatrixMath.zRotation(element.camera.zRotation)), this.MatrixMath.translation(element.camera.x, element.camera.y, element.camera.z));
+        var projectionMatrix = this.MatrixMath.mult(element.camera.projectionMatrix, transformedMatrix);
         var uniformLocation = this.c.getUniformLocation(element.program, "projectionMatrix");
         this.c.uniformMatrix4fv(uniformLocation, this.c.FALSE, new Float32Array(projectionMatrix));
 
