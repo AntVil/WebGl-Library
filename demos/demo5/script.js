@@ -34,7 +34,8 @@ window.onload = function () {
         c.createUniform("texture", "sampler2D"),
         c.createUniform("projectionMatrix", "mat4")
     ];
-    
+    c.setTextureToImage(element.uniforms[0], "DogPicture.jpeg");
+
     element.vertices = [
         -0.5, -0.5, 0, 1,
         0.5, -0.5, 1, 1,
