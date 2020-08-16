@@ -3,18 +3,18 @@ var c;
 
 var element;
 
-var frame = 0;
+var frame;
 
 function adjustScreen() {
     can = document.getElementById("canvas");
     can.width = Math.min(window.innerWidth, window.innerHeight);
     can.height = can.width;
-    if(c === undefined){
+    if (c === undefined) {
         c = new WebGlContext(can);
-    }else{
+    } else {
         c.adjustScreen();
     }
-    
+
 }
 
 window.onresize = function () {
@@ -27,17 +27,15 @@ window.onload = function () {
     //enable Depthtest and Cullface, so the Cube is rendered properly
     c.enableDepthtest();
     c.enableCullface();
-    
-    //setting background color
-    c.clearColor(0.0, 0.0, 0.0, 0.0);
+
+    //setting background color to black
+    c.clearColor(0, 0, 0, 1);
 
     //creating element and giving it all the needed information 
     element = c.createElement();
-
     element.attributes = [
         c.createAttribute("vertPosition", 3)
     ];
-
     element.uniforms = [
         c.createUniform("rotationMatrix", "mat4")
     ];
@@ -52,7 +50,6 @@ window.onload = function () {
         1, 1, -1,
         1, 1, 1
     ];
-
     element.indicies = [
         0, 1, 2,
         1, 3, 2,
@@ -73,8 +70,8 @@ window.onload = function () {
         5, 6, 7,
     ];
 
-    //setting an other projectionMatrix than default value
-    element.camera.projectionMatrix = c.MatrixMath.perspective(Math.PI/2, 1, 0.1, 1000);
+    //setting an other projectionMatrix than default one
+    element.camera.projectionMatrix = c.MatrixMath.perspective(Math.PI / 2, 1, 0.1, 1000);
     element.camera.z = -3;
 
     //adding shaders to element and adding element to the internal list of elements
@@ -86,12 +83,12 @@ window.onload = function () {
     loop();
 }
 
-function loop(){
+function loop() {
     //clear screen
     c.clear();
 
     //update uniforms
-    element.uniforms[0].value = c.MatrixMath.mult(c.MatrixMath.yRotation(frame/100), c.MatrixMath.xRotation(frame/300));
+    element.uniforms[0].value = c.MatrixMath.mult(c.MatrixMath.yRotation(frame / 100), c.MatrixMath.xRotation(frame / 300));
 
     //render to screen
     c.renderFrame();

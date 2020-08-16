@@ -1,19 +1,16 @@
 var can
 var c;
 
-
 var element1;
 var element2;
-
-var frame = 0;
 
 function adjustScreen() {
     can = document.getElementById("canvas");
     can.width = Math.min(window.innerWidth, window.innerHeight);
     can.height = can.width;
-    if(c === undefined){
+    if (c === undefined) {
         c = new WebGlContext(can);
-    }else{
+    } else {
         c.adjustScreen();
     }
 }
@@ -25,8 +22,10 @@ window.onresize = function () {
 window.onload = function () {
     adjustScreen();
 
+    //setting background color to black
     c.clearColor(0.0, 0.0, 0.0, 0.0);
 
+    //creating element (left) and giving it all the needed information 
     element1 = c.createElement();
     element1.attributes = [
         c.createAttribute("vertPosition", 2),
@@ -48,16 +47,18 @@ window.onload = function () {
         2, 1, 3
     ];
 
+    //adding shaders to element and adding element to the internal list of elements
     var vertexShaderSrc = document.getElementById("vertexShaderElement1").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement1").innerHTML;
     c.addElement(element1, vertexShaderSrc, fragmentShaderSrc);
 
-
+    //creating element (right) and giving it all the needed information 
     element2 = c.createElement();
     element2.attributes = [
         c.createAttribute("vertPosition", 2),
         c.createAttribute("texturePosition", 2),
     ];
+    //sharing uniform
     element2.uniforms = [
         element1.uniforms[0]
     ];
@@ -73,19 +74,11 @@ window.onload = function () {
         2, 1, 3
     ];
 
+    //adding shaders to element and adding element to the internal list of elements
     var vertexShaderSrc = document.getElementById("vertexShaderElement2").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement2").innerHTML;
     c.addElement(element2, vertexShaderSrc, fragmentShaderSrc);
 
-    frame = 0;
-    loop();
-}
-
-function loop() {
     c.clear();
-
     c.renderFrame();
-
-    frame++;
-    requestAnimationFrame(loop);
 }
