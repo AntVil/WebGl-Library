@@ -14,7 +14,7 @@
         <canvas id="canvas"></canvas>
     </div>
 
-    <script id="vertexShader" type="x-shader/x-fragment">
+    <script id="vertexShaderElement1" type="x-shader/x-fragment">
 		precision mediump float;
 
         attribute vec2 vertPosition;
@@ -29,7 +29,7 @@
 			gl_Position = projectionMatrix * vec4(vertPosition, 0.0, 1.0);
 		}
 	</script>
-    <script id="fragmentShader" type="x-shader/x-fragment">
+    <script id="fragmentShaderElement1" type="x-shader/x-fragment">
 		precision mediump float;
 		
         varying vec2 textureCoordinate;
@@ -37,6 +37,32 @@
 
 		void main(){
 			gl_FragColor = texture2D(texture, textureCoordinate);
+		}
+	</script>
+
+	<script id="vertexShaderElement2" type="x-shader/x-fragment">
+		precision mediump float;
+
+        attribute vec2 vertPosition;
+        attribute vec2 texturePosition;
+
+		varying vec2 textureCoordinate;
+
+        uniform mat4 projectionMatrix;
+		
+		void main(){
+            textureCoordinate = texturePosition;
+			gl_Position = projectionMatrix * vec4(vertPosition, 0.0, 1.0);
+		}
+	</script>
+    <script id="fragmentShaderElement2" type="x-shader/x-fragment">
+		precision mediump float;
+		
+        varying vec2 textureCoordinate;
+        uniform sampler2D texture;
+
+		void main(){
+			gl_FragColor = texture2D(texture, textureCoordinate).bgra;
 		}
 	</script>
 
