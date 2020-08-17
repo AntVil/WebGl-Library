@@ -1,3 +1,8 @@
+/**
+ * 
+ * @constructor
+ * @param {Canvas} canvas
+ */
 function WebGlContext(canvas) {
     this.canvas = canvas;
     this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
@@ -7,8 +12,17 @@ function WebGlContext(canvas) {
 
     this.elements = [];
 
+    /**
+     * A sub-object with helpful matrix math functions
+     */
     this.MatrixMath = {
-        //matrix-math
+        /**
+         * 
+         * @param {number} tx 
+         * @param {number} ty 
+         * @param {number} tz 
+         * @returns {number[]}
+         */
         translation: function (tx, ty, tz) {
             return [
                 1, 0, 0, 0,
@@ -18,6 +32,11 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number} angleInRadians 
+         * @returns {number[]}
+         */
         xRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
             var s = Math.sin(angleInRadians);
@@ -30,6 +49,11 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number} angleInRadians 
+         * @returns {number[]}
+         */
         yRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
             var s = Math.sin(angleInRadians);
@@ -42,6 +66,11 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number} angleInRadians 
+         * @returns {number[]}
+         */
         zRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
             var s = Math.sin(angleInRadians);
@@ -54,6 +83,12 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number} sx 
+         * @param {number} sy 
+         * @param {number} sz 
+         */
         scaling: function (sx, sy, sz) {
             return [
                 sx, 0, 0, 0,
@@ -63,6 +98,12 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number[]} a 
+         * @param {number[]} b 
+         * @returns {number[]}
+         */
         mult: function (a, b) {
             var b00 = b[0 * 4 + 0];
             var b01 = b[0 * 4 + 1];
@@ -117,6 +158,16 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number} left 
+         * @param {number} right 
+         * @param {number} bottom 
+         * @param {number} top 
+         * @param {number} near 
+         * @param {number} far 
+         * @returns {number[]}
+         */
         orthographic: function (left, right, bottom, top, near, far) {
             return [
                 2 / (right - left), 0, 0, 0,
@@ -130,6 +181,14 @@ function WebGlContext(canvas) {
             ];
         },
 
+        /**
+         * 
+         * @param {number} fieldOfViewInRadians 
+         * @param {numer} aspect 
+         * @param {number} near 
+         * @param {number} far 
+         * @returns {number[]}
+         */
         perspective: function (fieldOfViewInRadians, aspect, near, far) {
             var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
             var rangeInv = 1.0 / (near - far);
@@ -143,39 +202,68 @@ function WebGlContext(canvas) {
         }
     };
 
-
+    /**
+     * 
+     */
     this.adjustScreen = function () {
         this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
         this.c.viewport(0, 0, this.canvas.width, this.canvas.height);
     }
 
+    /**
+     * 
+     * @param {number} r 
+     * @param {number} g 
+     * @param {number} b 
+     * @param {number} a 
+     */
     this.clearColor = function (r, g, b, a) {
         this.c.clearColor(r, g, b, a);
     }
 
+    /**
+     * 
+     */
     this.enableDepthtest = function () {
         this.c.enable(this.c.DEPTH_TEST);
     }
 
+    /**
+     * 
+     */
     this.disableDepthtest = function () {
         this.c.disable(this.c.DEPTH_TEST);
     }
 
+    /**
+     * 
+     */
     this.enableCullface = function () {
         this.c.enable(this.c.CULL_FACE);
     }
 
+    /**
+     * 
+     */
     this.disableCullface = function () {
         this.c.disable(this.c.CULL_FACE);
     }
 
+    /**
+     * 
+     */
     this.clear = function () {
         this.c.clear(this.c.COLOR_BUFFER_BIT);
         this.c.clear(this.c.DEPTH_BUFFER_BIT);
     }
 
 
-
+    /**
+     * 
+     * @param {String} name 
+     * @param {number} size 
+     * @returns {JSON}
+     */
     this.createAttribute = function (name, size) {
         return {
             name: name,
@@ -183,6 +271,12 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {String} name 
+     * @param {String} type 
+     * @returns {JSON}
+     */
     this.createUniform = function (name, type) {
         if (type == "sampler2D") {
             this.textureUnit += 1;
@@ -204,6 +298,11 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {JSON} uniform 
+     * @param {String} imageUrl 
+     */
     this.setTextureToImage = function (uniform, imageUrl) {
         var image = new Image();
         if ((new URL(imageUrl, window.location.href)).origin !== window.location.origin) {
@@ -227,6 +326,13 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {JSON} uniform 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {number[]} data 
+     */
     this.setTexture = function (uniform, width, height, data){
         this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
@@ -245,6 +351,10 @@ function WebGlContext(canvas) {
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
     }
 
+    /**
+     * 
+     * @returns {JSON}
+     */
     this.createCamera = function () {
         return {
             x: 0,
@@ -257,6 +367,10 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @returns {JSON}
+     */
     this.createElement = function () {
         return {
             program: null,
@@ -274,16 +388,31 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {JSON} element 
+     * @param {String} vertexShaderSrc 
+     * @param {String} fragmentShaderSrc 
+     */
     this.addShaders = function (element, vertexShaderSrc, fragmentShaderSrc) {
         element.program = this.createProgram(vertexShaderSrc, fragmentShaderSrc);
     }
 
+    /**
+     * 
+     * @param {JSON} element 
+     */
     this.addElement = function(element){
         if(!this.elements.includes(element)){
             this.elements.push(element);
         }
     }
 
+    /**
+     * 
+     * @param {JSON} element 
+     * @returns {boolean}
+     */
     this.removeElement = function(element){
         var index = this.elements.indexOf(element);
         if(index != -1){
@@ -294,6 +423,10 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {JSON} element 
+     */
     this.renderElement = function (element) {
         this.c.useProgram(element.program);
         this.createBuffers(element.program, element.vertices, element.attributes, element.indicies);
@@ -352,12 +485,19 @@ function WebGlContext(canvas) {
         this.c.drawElements(this.c.TRIANGLES, element.indicies.length, this.c.UNSIGNED_SHORT, 0);
     }
 
+    /**
+     * 
+     */
     this.renderFrame = function () {
         for (var i = 0; i < this.elements.length; i++) {
             this.renderElement(this.elements[i]);
         }
     }
 
+    /**
+     * 
+     * @param {JSON} uniformTexture 
+     */
     this.setTarget = function(uniformTexture){
         if(uniformTexture === null){
             this.c.bindFramebuffer(this.c.FRAMEBUFFER, null);
@@ -380,6 +520,11 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {number} textureId 
+     * @param {JSON} uniformTexture 
+     */
     this.bindTexture = function(textureId, uniformTexture){
         var activeTexture = eval("this.c.TEXTURE" + textureId);
         this.c.activeTexture(activeTexture);
@@ -390,7 +535,11 @@ function WebGlContext(canvas) {
         }
     }
 
-
+    /**
+     * 
+     * @param {String} src 
+     * @param {number} type 
+     */
     this.createShader = function (src, type) {
         var shader = this.c.createShader(type);
         this.c.shaderSource(shader, src);
@@ -403,6 +552,11 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {String} vertexShaderSrc 
+     * @param {String} fragmentShaderSrc 
+     */
     this.createProgram = function (vertexShaderSrc, fragmentShaderSrc) {
         var vertexShader = this.createShader(vertexShaderSrc, this.c.VERTEX_SHADER);
         var fragmentShader = this.createShader(fragmentShaderSrc, this.c.FRAGMENT_SHADER);
@@ -421,6 +575,13 @@ function WebGlContext(canvas) {
         }
     }
 
+    /**
+     * 
+     * @param {Program} program 
+     * @param {number[]} vertices 
+     * @param {JSON[]} attributes 
+     * @param {number[]} indicies 
+     */
     this.createBuffers = function (program, vertices, attributes, indicies) {
         var vertexBuffer = this.c.createBuffer();
         this.c.bindBuffer(this.c.ARRAY_BUFFER, vertexBuffer);
