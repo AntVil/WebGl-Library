@@ -43,7 +43,8 @@ window.onload = function () {
     //adding shaders to element and adding element to the internal list of elements
     var vertexShaderSrc = document.getElementById("vertexShader").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShader").innerHTML;
-    c.addElement(element, vertexShaderSrc, fragmentShaderSrc);
+    c.addShaders(element, vertexShaderSrc, fragmentShaderSrc);
+    c.addElement(element);
 
     //clear screen
     c.clear();
