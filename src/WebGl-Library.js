@@ -157,8 +157,16 @@ function WebGlContext(canvas) {
         this.c.enable(this.c.DEPTH_TEST);
     }
 
+    this.disableDepthtest = function () {
+        this.c.disable(this.c.DEPTH_TEST);
+    }
+
     this.enableCullface = function () {
         this.c.enable(this.c.CULL_FACE);
+    }
+
+    this.disableCullface = function () {
+        this.c.disable(this.c.CULL_FACE);
     }
 
     this.clear = function () {
@@ -266,9 +274,24 @@ function WebGlContext(canvas) {
         }
     }
 
-    this.addElement = function (element, vertexShaderSrc, fragmentShaderSrc) {
+    this.addShaders = function (element, vertexShaderSrc, fragmentShaderSrc) {
         element.program = this.createProgram(vertexShaderSrc, fragmentShaderSrc);
-        this.elements.push(element);
+    }
+
+    this.addElement = function(element){
+        if(!this.elements.includes(element)){
+            this.elements.push(element);
+        }
+    }
+
+    this.removeElement = function(element){
+        var index = this.elements.indexOf(element);
+        if(index != -1){
+            this.elements.splice(index, 1);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     this.renderElement = function (element) {
