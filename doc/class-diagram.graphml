@@ -46,7 +46,7 @@
 +renderElement(element: JSON): void
 +renderFrame(): void
 +setTarget(uniformTexture: JSON): void
-+bindTexture(textureId, uniformTexture): void
++bindTexture(textureId: int, uniformTexture: JSON): void
 
 -createShader(src: String, type: int): Shader
 -createProgram(vertexShader, fragmentShader): Program
