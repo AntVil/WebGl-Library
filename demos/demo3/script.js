@@ -48,9 +48,10 @@ window.onload = function () {
     ];
 
     //adding shaders to element and adding element to the internal list of elements
-    var vertexShaderSrc = document.getElementById("vertexShaderElement1").innerHTML;
-    var fragmentShaderSrc = document.getElementById("fragmentShaderElement1").innerHTML;
-    c.addElement(element1, vertexShaderSrc, fragmentShaderSrc);
+    var vertexShaderSrc1 = document.getElementById("vertexShaderElement1").innerHTML;
+    var fragmentShaderSrc1 = document.getElementById("fragmentShaderElement1").innerHTML;
+    c.addShaders(element1, vertexShaderSrc1, fragmentShaderSrc1);
+    c.addElement(element1);
 
     //creating element (right) and giving it all the needed information 
     element2 = c.createElement();
@@ -75,9 +76,10 @@ window.onload = function () {
     ];
 
     //adding shaders to element and adding element to the internal list of elements
-    var vertexShaderSrc = document.getElementById("vertexShaderElement2").innerHTML;
-    var fragmentShaderSrc = document.getElementById("fragmentShaderElement2").innerHTML;
-    c.addElement(element2, vertexShaderSrc, fragmentShaderSrc);
+    var vertexShaderSrc2 = document.getElementById("vertexShaderElement2").innerHTML;
+    var fragmentShaderSrc2 = document.getElementById("fragmentShaderElement2").innerHTML;
+    c.addShaders(element2, vertexShaderSrc2, fragmentShaderSrc2);
+    c.addElement(element2);
 
     loop();
 }
