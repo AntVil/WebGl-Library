@@ -51,7 +51,8 @@ window.onload = function () {
 
     var vertexShaderSrc = document.getElementById("vertexShaderElement").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement").innerHTML;
-    c.addElement(element, vertexShaderSrc, fragmentShaderSrc);
+    c.addShaders(element, vertexShaderSrc, fragmentShaderSrc);
+    c.addElement(element);
 
     uniformTexture = c.createUniform("texture", "sampler2D");
     c.setTexture(uniformTexture, 100, 100, null);
