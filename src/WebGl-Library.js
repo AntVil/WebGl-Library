@@ -474,7 +474,7 @@ function WebGlContext(canvas) {
                     this.c.uniform1i(uniformLocation, new Float32Array(uniform));
 
                     if(element.uniforms[i].useTexture){
-                        this.bindTexture(element[i].uniforms[i]);
+                        this.bindTexture(element.uniforms[i]);
                     }
                     break;
                 case "samplerCube":
