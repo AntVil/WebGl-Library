@@ -470,7 +470,6 @@ function WebGlContext(canvas) {
                     this.c.uniform4iv(uniformLocation, [v0, v1, v2, v4]);
                     break;
                 case "sampler2D":
-                    this.bindTexture(element.uniforms[i]);
                     this.c.uniform1i(uniformLocation, new Float32Array(uniform));
                     break;
                 case "samplerCube":
