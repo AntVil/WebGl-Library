@@ -8,7 +8,7 @@ function WebGlContext(canvas) {
     this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
     this.c.viewport(0, 0, this.canvas.width, this.canvas.height);
 
-    this.textureUnit = 0;
+    this.textureUnit = -1;
 
     this.elements = [];
 
@@ -287,8 +287,7 @@ function WebGlContext(canvas) {
                 height: 0,
                 data: null,
                 texture: this.c.createTexture(),
-                value: this.textureUnit,
-                useTexture: true
+                value: this.textureUnit
             };
         } else {
             return {
@@ -336,6 +335,7 @@ function WebGlContext(canvas) {
      */
     this.setTexture = function (uniform, width, height, data){
         this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
+
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
         uniform.width = width;
         uniform.height = height;
@@ -471,11 +471,8 @@ function WebGlContext(canvas) {
                     this.c.uniform4iv(uniformLocation, [v0, v1, v2, v4]);
                     break;
                 case "sampler2D":
-                    this.c.uniform1i(uniformLocation, new Float32Array(uniform));
-
-                    if(element.uniforms[i].useTexture){
-                        this.bindTexture(element.uniforms[i]);
-                    }
+                    this.c.uniform1i(uniformLocation, uniform);
+                    this.bindTexture(element.uniforms[i], uniform);
                     break;
                 case "samplerCube":
                     this.c.uniform1iv(uniformLocation, [v]);
@@ -510,7 +507,7 @@ function WebGlContext(canvas) {
             this.adjustScreen();
         }else{
             for(var i=0;i<32;i++){
-                this.bindTexture(i, null);
+                this.bindTexture(null, i);
             }
             var frameBuffer = this.c.createFramebuffer();
             this.c.bindFramebuffer(this.c.FRAMEBUFFER, frameBuffer);
@@ -532,11 +529,11 @@ function WebGlContext(canvas) {
      */
     this.bindTexture = function(uniformTexture, textureId){
         if(uniformTexture === null){
-            var activeTexture = eval("this.c.TEXTURE" + textureId);
+            var activeTexture = this.c.TEXTURE0 + textureId;
             this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, null);
         }else{
-            var activeTexture = eval("this.c.TEXTURE" + uniformTexture.value);
+            var activeTexture = this.c.TEXTURE0 + uniformTexture.value;
             this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, uniformTexture.texture);
         }

@@ -33,15 +33,18 @@
 		precision mediump float;
 		
         varying vec2 textureCoordinate;
+        uniform sampler2D texture0;
         uniform sampler2D texture1;
-        uniform sampler2D texture2;
 
 		void main(){
-			gl_FragColor = texture2D(texture2, textureCoordinate);
+            vec4 col0 = texture2D(texture0, textureCoordinate);
+            vec4 col1 = texture2D(texture1, textureCoordinate);
+			gl_FragColor = col0 * col1;
 		}
 	</script>
 
-	<script type="text/javascript" src="https://htcryme.github.io/WebGl-Library/src/WebGl-Library.js"></script>
+    <script type="text/javascript" src="https://htcryme.github.io/WebGl-Library/src/WebGl-Library.js"></script>
+    <!--script type="text/javascript" src="/src/WebGl-Library.js"></script-->
     <script type="text/javascript" src="script.js"></script>
 </body>
 

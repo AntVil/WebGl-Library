@@ -31,10 +31,10 @@ window.onload = function () {
         c.createAttribute("texturePosition", 2),
     ];
     element.uniforms = [
+        c.createUniform("texture0", "sampler2D"),
         c.createUniform("texture1", "sampler2D"),
-        c.createUniform("texture2", "sampler2D"),
     ];
-    c.setTextureToImage(element.uniforms[1], "DogPicture.jpeg");
+    c.setTextureToImage(element.uniforms[0], "DogPicture.jpeg");
 
     element.vertices = [
         -1, -1, 0, 1,
@@ -46,9 +46,6 @@ window.onload = function () {
         0, 1, 2,
         2, 1, 3
     ];
-
-    element.camera.projectionMatrix = c.MatrixMath.perspective(Math.PI/2, 1, 0.1, 1000);
-    element.camera.z = -2;
 
     var vertexShaderSrc = document.getElementById("vertexShaderElement").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement").innerHTML;
@@ -64,16 +61,16 @@ window.onload = function () {
 function loop() {
     c.clear();
 
+    var width = 10;
+    var height = 10;
     var data = [];
-    for (var i = 0; i < 10; i++) {
-        for (var j = 0; j < 10; j++) {
+    for (var i = 0; i < height; i++) {
+        for (var j = 0; j < width; j++) {
             var val = parseInt((Math.sin((i + j + frame) / 10) + 1) / 2 * 255);
             data.push(val, val, val, val);
         }
     }
-    c.setTexture(element.uniforms[0], 10, 10, data);
-
-    
+    c.setTexture(element.uniforms[1], width, height, data);
     
     c.renderFrame();
 

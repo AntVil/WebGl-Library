@@ -1,6 +1,8 @@
 var can
 var c;
 
+var screenUniform;
+
 var element;
 
 var frame = 0;
@@ -34,6 +36,7 @@ window.onload = function () {
         c.createUniform("texture", "sampler2D"),
         c.createUniform("rotationMatrix", "mat4")
     ];
+    
 
     element.vertices = [
         -1, -1, 0, 1,
@@ -54,8 +57,8 @@ window.onload = function () {
     c.addShaders(element, vertexShaderSrc, fragmentShaderSrc);
     c.addElement(element);
 
-    uniformTexture = c.createUniform("texture", "sampler2D");
-    c.setTexture(uniformTexture, 100, 100, null);
+    screenUniform = c.createUniform("texture", "sampler2D");
+    c.setTexture(screenUniform, 255, 255, null);
 
     c.clear();
 
@@ -73,24 +76,24 @@ function loop() {
             data.push(val, val, val, val);
         }
     }
-    element.uniforms[0] = c.createUniform("texture", "sampler2D");
     c.setTexture(element.uniforms[0], 10, 10, data);
-
-    var uniformTexture = c.createUniform("texture", "sampler2D");
-    c.setTexture(uniformTexture, 255, 255, null);
     
-    c.setTarget(uniformTexture);
+    c.setTarget(screenUniform);
     c.clearColor(0.1, 0.1, 0.1, 1);
     c.clear();
-    c.bindTexture(0, element.uniforms[0]);
     c.renderFrame();
 
 
     c.setTarget(null);
     c.clearColor(0, 0, 0, 1);
     c.clear();
-    c.bindTexture(0, uniformTexture);
+    
+    var temp = element.uniforms[0];
+    element.uniforms[0] = screenUniform;
+
     c.renderFrame();
+
+    element.uniforms[0] = temp
 
     frame++;
     requestAnimationFrame(loop);
