@@ -23,17 +23,21 @@ window.onresize = function () {
 window.onload = function () {
     adjustScreen();
 
+    //setting background color to black
     c.clearColor(0, 0, 0, 1);
 
+    //creating element and giving it all the needed information 
     element = c.createElement();
     element.attributes = [
         c.createAttribute("vertPosition", 2),
         c.createAttribute("texturePosition", 2),
     ];
+    //2 textures
     element.uniforms = [
         c.createUniform("texture0", "sampler2D"),
         c.createUniform("texture1", "sampler2D"),
     ];
+    //setting data (image) for texture0
     c.setTextureToImage(element.uniforms[0], "DogPicture.jpeg");
 
     element.vertices = [
@@ -47,6 +51,7 @@ window.onload = function () {
         2, 1, 3
     ];
 
+    //adding shaders to element and adding element to the internal list of elements
     var vertexShaderSrc = document.getElementById("vertexShaderElement").innerHTML;
     var fragmentShaderSrc = document.getElementById("fragmentShaderElement").innerHTML;
     c.addShaders(element, vertexShaderSrc, fragmentShaderSrc);
@@ -61,6 +66,7 @@ window.onload = function () {
 function loop() {
     c.clear();
 
+    //creating data for texture1
     var width = 10;
     var height = 10;
     var data = [];
@@ -70,10 +76,13 @@ function loop() {
             data.push(val, val, val, val);
         }
     }
+    //setting data for texture1
     c.setTexture(element.uniforms[1], width, height, data);
     
+    //render to screen
     c.renderFrame();
 
+    //restart loop
     frame++;
     requestAnimationFrame(loop);
 }
