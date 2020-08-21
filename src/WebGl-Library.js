@@ -288,6 +288,7 @@ function WebGlContext(canvas) {
                 data: null,
                 texture: this.c.createTexture(),
                 value: this.textureUnit,
+                useTexture: true
             };
         } else {
             return {
@@ -471,6 +472,10 @@ function WebGlContext(canvas) {
                     break;
                 case "sampler2D":
                     this.c.uniform1i(uniformLocation, new Float32Array(uniform));
+
+                    if(element.uniforms[i].useTexture){
+                        this.bindTexture(element[i].uniforms[i]);
+                    }
                     break;
                 case "samplerCube":
                     this.c.uniform1iv(uniformLocation, [v]);

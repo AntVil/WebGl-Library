@@ -34,9 +34,7 @@ window.onload = function () {
         c.createUniform("texture1", "sampler2D"),
         c.createUniform("texture2", "sampler2D"),
     ];
-    c.setTextureToImage(element.uniforms[1], "DogPicture.jpeg")
-    c.bindTexture(element.uniforms[0]);
-    c.bindTexture(element.uniforms[1]);
+    c.setTextureToImage(element.uniforms[1], "DogPicture.jpeg");
 
     element.vertices = [
         -1, -1, 0, 1,
