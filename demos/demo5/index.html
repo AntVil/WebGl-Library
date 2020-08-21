@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width" />
-    <title>WebGl-Library - demo 6</title>
+    <title>WebGl-Library - demo 5</title>
 	<link rel="stylesheet" href="style.css" />	
 </head>
 
@@ -22,22 +22,22 @@
 
 		varying vec2 textureCoordinate;
 
-		uniform mat4 rotationMatrix;
         uniform mat4 projectionMatrix;
 		
 		void main(){
             textureCoordinate = texturePosition;
-			gl_Position = projectionMatrix * rotationMatrix * vec4(vertPosition, 0.0, 1.0);
+			gl_Position = projectionMatrix * vec4(vertPosition, 0.0, 1.0);
 		}
 	</script>
     <script id="fragmentShaderElement" type="x-shader/x-fragment">
 		precision mediump float;
 		
         varying vec2 textureCoordinate;
-        uniform sampler2D texture;
+        uniform sampler2D texture1;
+        uniform sampler2D texture2;
 
 		void main(){
-			gl_FragColor = texture2D(texture, textureCoordinate);
+			gl_FragColor = texture2D(texture1, textureCoordinate) * texture2D(texture2, textureCoordinate);
 		}
 	</script>
 

@@ -470,6 +470,7 @@ function WebGlContext(canvas) {
                     this.c.uniform4iv(uniformLocation, [v0, v1, v2, v4]);
                     break;
                 case "sampler2D":
+                    this.bindTexture(element.uniforms[i]);
                     this.c.uniform1i(uniformLocation, new Float32Array(uniform));
                     break;
                 case "samplerCube":
@@ -525,12 +526,14 @@ function WebGlContext(canvas) {
      * @param {number} textureId 
      * @param {JSON} uniformTexture 
      */
-    this.bindTexture = function(textureId, uniformTexture){
-        var activeTexture = eval("this.c.TEXTURE" + textureId);
-        this.c.activeTexture(activeTexture);
+    this.bindTexture = function(uniformTexture, textureId){
         if(uniformTexture === null){
+            var activeTexture = eval("this.c.TEXTURE" + textureId);
+            this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, null);
         }else{
+            var activeTexture = eval("this.c.TEXTURE" + uniformTexture.value);
+            this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, uniformTexture.texture);
         }
     }
