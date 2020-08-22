@@ -18,3 +18,11 @@ body{
 	transform: translate(-50%, -50%);
 	background-color: #000000;
 }
+
+#link{
+	position: fixed;
+	left: 50%;
+	top: 15px;
+	transform: translate(-50%, -50%);
+	color: #FFFFFF;
+}
