@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width" />
+    <title>WebGl-Library - demo 6</title>
+	<link rel="stylesheet" href="style.css" />	
+</head>
+
+<body>
+
+    <div id="background">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script id="vertexShaderElement" type="x-shader/x-fragment">
+		precision mediump float;
+
+        attribute vec3 vertPosition;
+        
+        varying vec3 textureCoordinate;
+        
+        uniform mat4 rotationMatrix;
+        uniform mat4 projectionMatrix;
+		
+		void main(){
+            textureCoordinate = vertPosition;
+			gl_Position = projectionMatrix * rotationMatrix * vec4(vertPosition, 1.0);
+		}
+	</script>
+    <script id="fragmentShaderElement" type="x-shader/x-fragment">
+		precision mediump float;
+		
+        varying vec3 textureCoordinate;
+
+        uniform samplerCube cube;
+
+		void main(){
+			gl_FragColor = textureCube(cube, normalize(textureCoordinate));
+		}
+	</script>
+
+	<!--script type="text/javascript" src="https://htcryme.github.io/WebGl-Library/src/WebGl-Library.js"></script-->
+    <script type="text/javascript" src="/src/WebGl-Library.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</body>
+
+</html>
