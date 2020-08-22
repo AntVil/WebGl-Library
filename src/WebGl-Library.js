@@ -434,18 +434,53 @@ function WebGlContext(canvas) {
      * @param {number} width 
      * @param {Array<Number>} data 
      */
-    this.setCubeSide = function(uniform, side, width, data){        
+    this.setCubeSide = function(uniform, side, width, height, data){        
         this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, uniform.texture);
 
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
-        uniform.width = width;
-        uniform.height = height;
-        if(data === null){
-            this.c.texImage2D(this.c.TEXTURE_CUBE_MAP, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, null);
+        
+        if(uniform.width != 0 && uniform.height != 0){
+            if(width != uniform.width || height != uniform.height){
+                console.log("textures in samplerCube need to be of same size!");
+            }
         }else{
-            this.c.texImage2D(this.c.TEXTURE_CUBE_MAP, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, new Uint8Array(data));
+            uniform.width = width;
+            uniform.height = height;
         }
         
+        var target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+        var s = side.toLocaleLowerCase();
+        switch(s){
+            case "x":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                break;
+            case "+x":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                break;
+            case "-x":
+                target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_X;
+                break;
+            case "y":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                break;
+            case "+y":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                break;
+            case "-y":
+                target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+                break;
+            case "z":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                break;
+            case "+z":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                break;
+            case "-z":
+                target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+                break;
+        }
+
+        this.c.texImage2D(target, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, new Uint8Array(data));
 
         this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
         this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
