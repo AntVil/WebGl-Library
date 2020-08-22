@@ -1,5 +1,5 @@
 /**
- * 
+ * JavaScript Library for simple 3d Objects using WebGl
  * @constructor
  * @param {Canvas} canvas
  */
@@ -14,14 +14,15 @@ function WebGlContext(canvas) {
 
     /**
      * A sub-object with helpful matrix math functions
+     * @type {{}}
      */
     this.MatrixMath = {
         /**
-         * 
+         * Generates a translation matrix
          * @param {number} tx 
          * @param {number} ty 
          * @param {number} tz 
-         * @returns {number[]}
+         * @returns {Array<number>}
          */
         translation: function (tx, ty, tz) {
             return [
@@ -33,9 +34,9 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
+         * Generates a rotation matrix (rotation around x-axis)
          * @param {number} angleInRadians 
-         * @returns {number[]}
+         * @returns {Array<Number>}
          */
         xRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
@@ -50,9 +51,9 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
+         * Generates a rotation matrix (rotation around y-axis)
          * @param {number} angleInRadians 
-         * @returns {number[]}
+         * @returns {Array<Number>}
          */
         yRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
@@ -67,9 +68,9 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
+         * Generates a rotation matrix (rotation around z-axis)
          * @param {number} angleInRadians 
-         * @returns {number[]}
+         * @returns {Array<Number>}
          */
         zRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
@@ -84,10 +85,11 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
+         * Generates a scaling matrix
          * @param {number} sx 
          * @param {number} sy 
          * @param {number} sz 
+         * @returns {Array<number>}
          */
         scaling: function (sx, sy, sz) {
             return [
@@ -99,10 +101,10 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
-         * @param {number[]} a 
-         * @param {number[]} b 
-         * @returns {number[]}
+         * Generates a matrix by multiplying 2 matricies
+         * @param {Array<Number>} a 
+         * @param {Array<Number>} b 
+         * @returns {Array<Number>}
          */
         mult: function (a, b) {
             var b00 = b[0 * 4 + 0];
@@ -159,14 +161,14 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
+         * Generates an orthographic projection matrix
          * @param {number} left 
          * @param {number} right 
          * @param {number} bottom 
          * @param {number} top 
          * @param {number} near 
          * @param {number} far 
-         * @returns {number[]}
+         * @returns {Array<Number>}
          */
         orthographic: function (left, right, bottom, top, near, far) {
             return [
@@ -182,12 +184,12 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * 
+         * Generates an perspective projection matrix
          * @param {number} fieldOfViewInRadians 
          * @param {numer} aspect 
          * @param {number} near 
          * @param {number} far 
-         * @returns {number[]}
+         * @returns {Array<Number>}
          */
         perspective: function (fieldOfViewInRadians, aspect, near, far) {
             var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
@@ -203,7 +205,7 @@ function WebGlContext(canvas) {
     };
 
     /**
-     * 
+     * Adjusts the context so it renders properly to the canvas (shouldn't be called when target is not canvas)
      */
     this.adjustScreen = function () {
         this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
@@ -211,46 +213,46 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {number} r 
-     * @param {number} g 
-     * @param {number} b 
-     * @param {number} a 
+     * Sets the clear/backround-color
+     * @param {number} r red
+     * @param {number} g green
+     * @param {number} b blue
+     * @param {number} a alpha
      */
     this.clearColor = function (r, g, b, a) {
         this.c.clearColor(r, g, b, a);
     }
 
     /**
-     * 
+     * Enables depthtesting
      */
     this.enableDepthtest = function () {
         this.c.enable(this.c.DEPTH_TEST);
     }
 
     /**
-     * 
+     * Disables depthtesting
      */
     this.disableDepthtest = function () {
         this.c.disable(this.c.DEPTH_TEST);
     }
 
     /**
-     * 
+     * Enables cullface
      */
     this.enableCullface = function () {
         this.c.enable(this.c.CULL_FACE);
     }
 
     /**
-     * 
+     * Disables cullface
      */
     this.disableCullface = function () {
         this.c.disable(this.c.CULL_FACE);
     }
 
     /**
-     * 
+     * Clears the target
      */
     this.clear = function () {
         this.c.clear(this.c.COLOR_BUFFER_BIT);
@@ -259,10 +261,10 @@ function WebGlContext(canvas) {
 
 
     /**
-     * 
+     * Creates a JSON with the needed information for an attribute used by the vertexshader
      * @param {String} name 
      * @param {number} size 
-     * @returns {JSON}
+     * @returns {{}}
      */
     this.createAttribute = function (name, size) {
         return {
@@ -272,10 +274,10 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
+     * Creates a JSON with the needed information for an uniform used by the shaders
      * @param {String} name 
      * @param {String} type 
-     * @returns {JSON}
+     * @returns {{}}
      */
     this.createUniform = function (name, type) {
         if (type == "sampler2D") {
@@ -310,8 +312,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} uniform 
+     * Sets the texture of an uniform (smapler2D) to an image
+     * @param {{}} uniform 
      * @param {String} imageUrl 
      */
     this.setTextureToImage = function (uniform, imageUrl) {
@@ -338,11 +340,11 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} uniform 
+     * Sets the texture of an uniform (smapler2D) to supplied data
+     * @param {{}} uniform 
      * @param {number} width 
      * @param {number} height 
-     * @param {number[]} data 
+     * @param {Array<Number>} data RGBA integer values [0;255]
      */
     this.setTexture = function (uniform, width, height, data){
         this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
@@ -363,6 +365,12 @@ function WebGlContext(canvas) {
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
     }
 
+    /**
+     * Sets the texture of a side of an uniform (smaplerCube) to an image
+     * @param {{}} uniform 
+     * @param {String} side <+/-><x/y/z>
+     * @param {String} imageUrl 
+     */
     this.setCubeSideToImage = function(uniform, side, imageUrl){        
         var image = new Image();
         if ((new URL(imageUrl, window.location.href)).origin !== window.location.origin) {
@@ -419,8 +427,14 @@ function WebGlContext(canvas) {
         }
     }
 
-
-    this.setCubeSide = function(uniform, side, imageUrl){        
+    /**
+     * Sets the texture of a side of an uniform (smaplerCube) to supplied data
+     * @param {{}} uniform 
+     * @param {String} side <+/-><x/y/z>
+     * @param {number} width 
+     * @param {Array<Number>} data 
+     */
+    this.setCubeSide = function(uniform, side, width, data){        
         this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, uniform.texture);
 
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
@@ -440,8 +454,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @returns {JSON}
+     * Creates a JSON with the needed information for a Camera
+     * @returns {{}}
      */
     this.createCamera = function () {
         return {
@@ -456,8 +470,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @returns {JSON}
+     * Creates a JSON with the needed information for an Element
+     * @returns {{}}
      */
     this.createElement = function () {
         return {
@@ -477,8 +491,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} element 
+     * Compiles the vertex and fragment shader and adds them to the element
+     * @param {{}} element 
      * @param {String} vertexShaderSrc 
      * @param {String} fragmentShaderSrc 
      */
@@ -487,8 +501,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} element 
+     * Adds the element to the internal list of elements so it can be easily rendered using renderFrame()
+     * @param {{}} element 
      */
     this.addElement = function(element){
         if(!this.elements.includes(element)){
@@ -497,8 +511,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} element 
+     * Removes the element from the internal list of elements so it won't be rendered using renderFrame()
+     * @param {{}} element 
      * @returns {boolean}
      */
     this.removeElement = function(element){
@@ -512,8 +526,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} element 
+     * Renders an specific element to the target (usually canvas)
+     * @param {{}} element 
      */
     this.renderElement = function (element) {
         this.c.useProgram(element.program);
@@ -576,7 +590,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
+     * Renders all elements which were added using addElement to the target (usually canvas)
      */
     this.renderFrame = function () {
         for (var i = 0; i < this.elements.length; i++) {
@@ -585,8 +599,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
-     * @param {JSON} uniformTexture 
+     * Sets a new target to render to and unbinds all textures so an texture is not used as input and output at once. Default target is canvas. To render to canvas pass null as an parameter.
+     * @param {{}} uniformTexture 
      */
     this.setTarget = function(uniformTexture){
         if(uniformTexture === null){
@@ -611,9 +625,9 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
+     * Binds (or unbinds) an texture (textureId should be the value of the uniform). Unbinds texture if uniformTexture is null.
      * @param {number} textureId 
-     * @param {JSON} uniformTexture 
+     * @param {{}} uniformTexture 
      */
     this.bindTexture = function(uniformTexture, textureId){
         if(uniformTexture === null){
@@ -632,7 +646,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
+     * Creates a Shader
      * @param {String} src 
      * @param {number} type 
      */
@@ -649,7 +663,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
+     * Creates a ShaderProgram
      * @param {String} vertexShaderSrc 
      * @param {String} fragmentShaderSrc 
      */
@@ -672,11 +686,11 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * 
+     * Creates the neccecary buffers for an render-call
      * @param {Program} program 
-     * @param {number[]} vertices 
-     * @param {JSON[]} attributes 
-     * @param {number[]} indicies 
+     * @param {Array<Number>} vertices 
+     * @param {{}[]} attributes 
+     * @param {Array<Number>} indicies 
      */
     this.createBuffers = function (program, vertices, attributes, indicies) {
         var vertexBuffer = this.c.createBuffer();
