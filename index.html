@@ -56,17 +56,14 @@
 
         .code {
             color: #FFFFFF;
-            border-left: 5px solid #1e1e1e;
+            border-left: 5px solid #131313;
             background-color: #252526;
 
             font-family: monospace;
 
             border-radius: 5px;
-            padding-left: 3px;
-            padding-right: 3px;
+            padding: 3px;
             margin: 5px;
-
-            font-size: 0;
         }
 
         .code_comment {
@@ -102,45 +99,158 @@
 </head>
 
 <body>
-    <div id="background">
-        <h1 id="title" class="heading"><a href="https://github.com/htcryme/WebGl-Library">WebGl-Library</a></h1>
+    <div id="background"></div>
+    <h1 id="title" class="heading"><a href="https://github.com/htcryme/WebGl-Library">WebGl-Library</a></h1>
 
-        <div class="container">
-            <h3 class="heading">Demos</h3>
-            <ul class="text">
-                <li><a href="demos/demo1/index.html">demo 1 (Triangle)</a></li>
-                <li><a href="demos/demo2/index.html">demo 2 (Cube)</a></li>
-                <li><a href="demos/demo3/index.html">demo 3 (Texture)</a></li>
-                <li><a href="demos/demo4/index.html">demo 4 (Data Texture)</a></li>
-                <li><a href="demos/demo5/index.html">demo 5 (Multiple Textures)</a></li>
-                <li><a href="demos/demo6/index.html">demo 6 (Rendering to Texture)</a></li>
-                <li><a href="demos/demo7/index.html">demo 6 (SamplerCube)</a></li>
-            </ul>
+    <div class="container">
+        <h3 class="heading">Demos</h3>
+        <ul class="text">
+            <li><a href="demos/demo1/index.html">demo 1 (Triangle)</a></li>
+            <li><a href="demos/demo2/index.html">demo 2 (Cube)</a></li>
+            <li><a href="demos/demo3/index.html">demo 3 (Texture)</a></li>
+            <li><a href="demos/demo4/index.html">demo 4 (Data Texture)</a></li>
+            <li><a href="demos/demo5/index.html">demo 5 (Multiple Textures)</a></li>
+            <li><a href="demos/demo6/index.html">demo 6 (Rendering to Texture)</a></li>
+            <li><a href="demos/demo7/index.html">demo 6 (SamplerCube)</a></li>
+        </ul>
 
 
+    </div>
+
+    <div class="container">
+        <h3 class="heading">Documentation</h3>
+        <ul class="text">
+            <li><a href="doc/modeling/class-diagram.pdf">class-diagram</a></li>
+            <li><a href="doc/documentation/index.html">documentation</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h3 class="heading">How to use this library</h3>
+
+        <h4 class="heading">Restrictions</h4>
+        <ul class="text">
+            <li>This Library forces you to have an uniform projection matirx in your vertexshader (but you don't
+                have to use it)</li>
+        </ul>
+
+        <h4 class="heading">General look of Vertexshader</h4>
+        <div class="code">
+            <span class="code_keyword">precision mediump float</span><span class="code_punctuation">;</span><br><br>
+
+            <span class="code_comment">//attributes</span><br><br>
+
+            <span class="code_comment">//varyings</span><br><br>
+
+            <span class="code_comment">//uniforms</span><br><br>
+
+            <span class="code_comment">//always needed with exact same name!!!</span><br>
+            <span class="code_keyword">uniform mat4 </span><span class="code_code">projectionMatrix</span><span
+                class="code_punctuation">;</span><br><br>
+
+            <span class="code_keyword">void</span> <span class="code_code">main</span><span
+                class="code_punctuation">(){</span><br>
+            &emsp;&emsp;&emsp;&emsp;<span class="code_comment">//setting varyings</span><br><br>
+            &emsp;&emsp;&emsp;&emsp;<span class="code_comment">//setting vertexPosition</span><br>
+            &emsp;&emsp;&emsp;&emsp;<span class="code_code">gl_Position</span> <span class="code_punctuation">=</span>
+            <span class="code_code">projectionMatrix</span> <span class="code_punctuation">*</span> <span
+                class="code_code">...</span><span class="code_punctuation">;</span><br>
+            <span class="code_punctuation">}</span>
         </div>
 
-        <div class="container">
-            <h3 class="heading">Documentation</h3>
-            <ul class="text">
-                <li><a href="doc/modeling/class-diagram.pdf">class-diagram</a></li>
-                <li><a href="doc/documentation/index.html">documentation</a></li>
-            </ul>
+        <h4 class="heading">General look of Fragmentshader</h4>
+        <div class="code">
+            <span class="code_keyword">precision mediump float</span><span class="code_punctuation">;</span><br><br>
+
+            <span class="code_comment">//varyings (same!)</span><br><br>
+
+            <span class="code_comment">//uniforms</span><br><br>
+
+            <span class="code_keyword">void</span> <span class="code_code">main</span><span
+                class="code_punctuation">(){</span><br>
+            &emsp;&emsp;&emsp;&emsp;<span class="code_comment">//setting fragmentColor</span><br>
+            &emsp;&emsp;&emsp;&emsp;<span class="code_code">gl_FragColor</span> <span class="code_punctuation">=</span>
+            <span class="code_code">...</span><span class="code_punctuation">;</span><br>
+            <span class="code_punctuation">}</span>
         </div>
 
-        <div class="container">
-            <h3 class="heading">How to use this library</h3>
-
-            <div class="code">
-                <span class="code_comment">// this is a comment</span><br>
-                <span class="code_keyword">var </span>
-                <span class="code_code">x </span>
-                <span class="code_punctuation">= </span>
-                <span class="code_constant">0</span>
-                <span class="code_punctuation">;</span>
-            </div>
+        <h4 class="heading">General look of JavaScript</h4>
+        <div class="code">
+            <span class="code_comment">//get canvas to render to</span><br>
+            <span class="code_keyword">var</span> can <span class="code_punctuation">=</span> <span
+                class="code_keyword">document</span><span class="code_punctuation">.</span>getElementById<span
+                class="code_punctuation">(</span><span class="code_string">"canvas"</span><span
+                class="code_punctuation">)</span><span class="code_punctuation">;</span><br>
+            <span class="code_comment">//create context</span><br>
+            <span class="code_keyword">var</span> c <span class="code_punctuation">=</span> <span
+                class="code_keyword">new</span> WebGlContext<span class="code_punctuation">(</span>can<span
+                class="code_punctuation">)</span><span class="code_punctuation">;</span><br>
+            <br>
+            <span class="code_comment">//setting the background color</span><br>
+            c<span class="code_punctuation">.</span>clearColor<span class="code_punctuation">(</span><span
+                class="code_constant">0</span><span class="code_punctuation">.</span><span
+                class="code_constant">0</span><span class="code_punctuation">,</span> <span class="code_constant">0</span><span
+                class="code_punctuation">.</span><span class="code_constant">0</span><span class="code_punctuation">,</span> <span
+                class="code_constant">0</span><span class="code_punctuation">.</span><span
+                class="code_constant">0</span><span class="code_punctuation">,</span> <span class="code_constant">1</span><span
+                class="code_punctuation">.</span><span class="code_constant">0</span><span
+                class="code_punctuation">);</span><br>
+            <br>
+            <span class="code_comment">//creating an element</span><br>
+            <span class="code_keyword">var</span> element = c<span class="code_punctuation">.</span>createElement<span
+                class="code_punctuation">();</span><br>
+            <br>
+            <span class="code_comment">//declaring attributes (of vertexShader)</span><br>
+            element<span class="code_punctuation">.</span>attributes <span class="code_punctuation">= [</span><br>
+            &emsp;&emsp;&emsp;&emsp;c<span class="code_punctuation">.</span>createAttribute<span
+                class="code_punctuation">(</span>[name]<span class="code_punctuation">,</span> [size]<span
+                class="code_punctuation">),</span><br>
+            <span class="code_punctuation">];</span><br>
+            <br>
+            <span class="code_comment">//declaring uniforms (of vertexShader & fragmentShader)</span><br>
+            element<span class="code_punctuation">.</span>uniforms <span class="code_punctuation">= [</span><br>
+            &emsp;&emsp;&emsp;&emsp;c<span class="code_punctuation">.</span>createUniform<span
+                class="code_punctuation">(</span>[name]<span class="code_punctuation">,</span> [type]<span
+                class="code_punctuation">)</span><br>
+            <span class="code_punctuation">];</span><br>
+            <span class="code_comment">//setting values of uniforms</span><br>
+            <br>
+            <span class="code_comment">//setting the value of vertices (in the order of attributes array)</span><br>
+            element<span class="code_punctuation">.</span>vertices <span class="code_punctuation">= [</span><br>
+            &emsp;&emsp;&emsp;&emsp;...<br>
+            <span class="code_punctuation">];</span><br>
+            <br>
+            <span class="code_comment">//declaring which vertices make up a triangle</span><br>
+            element<span class="code_punctuation">.</span>indicies <span class="code_punctuation">= [</span><br>
+            &emsp;&emsp;&emsp;&emsp;...<br>
+            <span class="code_punctuation">];</span><br>
+            <br>
+            <span class="code_comment">//adding shaders to element and adding element to the internal list of
+                elements</span><br>
+            <span class="code_keyword">var</span> vertexShaderSrc <span class="code_punctuation">=</span> <span
+                class="code_keyword">document</span><span class="code_punctuation">.</span>getElementById<span
+                class="code_punctuation">(</span><span class="code_string">"vertexShader"</span><span
+                class="punctuation">)</span><span class="code_punctuation">.</span>innerHTML<span
+                class="code_punctuation">;</span><br>
+            <span class="code_keyword">var</span> fragmentShaderSrc <span class="code_punctuation">=</span> <span
+                class="code_keyword">document</span><span class="code_punctuation">.</span>getElementById<span
+                class="code_punctuation">(</span><span class="code_string">"fragmentShader"</span><span
+                class="punctuation">)</span><span class="code_punctuation">.</span>innerHTML<span
+                class="code_punctuation">;</span><br>
+            c<span class="code_punctuation">.</span>addShaders<span class="code_punctuation">(</span>element<span
+                class="code_punctuation">,</span> vertexShaderSrc<span class="code_punctuation">,</span>
+            fragmentShaderSrc<span class="code_punctuation">);</span><br>
+            c<span class="code_punctuation">.</span>addElement<span class="code_punctuation">(</span>element<span
+                class="code_punctuation">);</span><br>
+            <br>
+            <span class="code_comment">//clear screen</span><br>
+            c<span class="code_punctuation">.</span>clear<span class="code_punctuation">();</span><br>
+            <br>
+            <span class="code_comment">//render to screen</span><br>
+            c<span class="code_punctuation">.</span>renderFrame<span class="code_punctuation">();</span>
         </div>
     </div>
+
 
 
 </body>
