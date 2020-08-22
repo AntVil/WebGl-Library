@@ -608,7 +608,7 @@ function WebGlContext(canvas) {
             this.c.bindRenderbuffer(this.c.RENDERBUFFER, null);
             this.adjustScreen();
         }else{
-            for(var i=0;i<32;i++){
+            for(var i=0;i<=this.textureUnit;i++){
                 this.bindTexture(null, i);
             }
             var frameBuffer = this.c.createFramebuffer();
