@@ -289,6 +289,17 @@ function WebGlContext(canvas) {
                 texture: this.c.createTexture(),
                 value: this.textureUnit
             };
+        } else if(type == "samplerCube"){
+            this.textureUnit += 1;
+            return {
+                name: name,
+                type: type,
+                width: 0,
+                height: 0,
+                data: null,
+                texture: this.c.createTexture(),
+                value: this.textureUnit
+            };
         } else {
             return {
                 name: name,
@@ -350,6 +361,82 @@ function WebGlContext(canvas) {
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
         this.c.texParameteri(this.c.TEXTURE_2D, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
+    }
+
+    this.setCubeSideToImage = function(uniform, side, imageUrl){        
+        var image = new Image();
+        if ((new URL(imageUrl, window.location.href)).origin !== window.location.origin) {
+            image.crossOrigin = "";
+        }
+        image.src = imageUrl;
+        image.c = this.c;
+        image.side = side;
+        image.uniform = uniform;
+        
+        image.onload = function(){
+            this.uniform.width = this.width;
+            this.uniform.height = this.height;
+            this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, this.uniform.texture);
+            
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
+
+            var target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+            var s = side.toLocaleLowerCase();
+            switch(s){
+                case "x":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                    break;
+                case "+x":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                    break;
+                case "-x":
+                    target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_X;
+                    break;
+                case "y":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                    break;
+                case "+y":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                    break;
+                case "-y":
+                    target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+                    break;
+                case "z":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                    break;
+                case "+z":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                    break;
+                case "-z":
+                    target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+                    break;
+            }
+
+            this.c.texImage2D(target, 0, this.c.RGBA, this.c.RGBA, this.c.UNSIGNED_BYTE, this);
+        }
+    }
+
+
+    this.setCubeSide = function(uniform, side, imageUrl){        
+        this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, uniform.texture);
+
+        this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
+        uniform.width = width;
+        uniform.height = height;
+        if(data === null){
+            this.c.texImage2D(this.c.TEXTURE_CUBE_MAP, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, null);
+        }else{
+            this.c.texImage2D(this.c.TEXTURE_CUBE_MAP, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, new Uint8Array(data));
+        }
+        
+
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
     }
 
     /**
@@ -438,16 +525,16 @@ function WebGlContext(canvas) {
 
             switch (element.uniforms[i].type) {
                 case "float":
-                    this.c.uniform1fv(uniformLocation, [v]);
+                    this.c.uniform1f(uniformLocation, uniform);
                     break;
                 case "vec2":
-                    this.c.uniform2fv(uniformLocation, [v0, v1]);
+                    this.c.uniform2fv(uniformLocation, new Float32Array(uniform));
                     break;
                 case "vec3":
-                    this.c.uniform3fv(uniformLocation, [v0, v1, v2]);
+                    this.c.uniform3fv(uniformLocation, new Float32Array(uniform));
                     break;
                 case "vec4":
-                    this.c.uniform4fv(uniformLocation, [v0, v1, v2, v4]);
+                    this.c.uniform4fv(uniformLocation, new Float32Array(uniform));
                     break;
                 case "mat2":
                     this.c.uniformMatrix2fv(uniformLocation, this.c.FALSE, new Float32Array(uniform));
@@ -459,23 +546,24 @@ function WebGlContext(canvas) {
                     this.c.uniformMatrix4fv(uniformLocation, this.c.FALSE, new Float32Array(uniform));
                     break;
                 case "int":
-                    this.c.uniform1iv(uniformLocation, [v]);
+                    this.c.uniform1i(uniformLocation, uniform);
                     break;
                 case "ivec2":
-                    this.c.uniform2iv(uniformLocation, [v0, v1]);
+                    this.c.uniform2iv(uniformLocation, new Int32Array(uniform));
                     break;
                 case "ivec3":
-                    this.c.uniform3iv(uniformLocation, [v0, v1, v2]);
+                    this.c.uniform3iv(uniformLocation, new Int32Array(uniform));
                     break;
                 case "ivec4":
-                    this.c.uniform4iv(uniformLocation, [v0, v1, v2, v4]);
+                    this.c.uniform4iv(uniformLocation, new Int32Array(uniform));
                     break;
                 case "sampler2D":
                     this.c.uniform1i(uniformLocation, uniform);
                     this.bindTexture(element.uniforms[i], uniform);
                     break;
                 case "samplerCube":
-                    this.c.uniform1iv(uniformLocation, [v]);
+                    this.c.uniform1i(uniformLocation, uniform);
+                    this.bindTexture(element.uniforms[i], uniform);
             }
         }
 
@@ -532,10 +620,14 @@ function WebGlContext(canvas) {
             var activeTexture = this.c.TEXTURE0 + textureId;
             this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, null);
-        }else{
+        }else if(uniformTexture.type == "sampler2D"){
             var activeTexture = this.c.TEXTURE0 + uniformTexture.value;
             this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, uniformTexture.texture);
+        }else if(uniformTexture.type == "samplerCube"){
+            var activeTexture = this.c.TEXTURE0 + uniformTexture.value;
+            this.c.activeTexture(activeTexture);
+            this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, uniformTexture.texture);
         }
     }
 
