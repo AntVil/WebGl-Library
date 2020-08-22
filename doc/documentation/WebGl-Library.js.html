@@ -27,6 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
+ * JavaScript Library for simple 3d Objects using WebGl
  * @constructor
  * @param {Canvas} canvas
  */
@@ -35,20 +36,20 @@ function WebGlContext(canvas) {
     this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
     this.c.viewport(0, 0, this.canvas.width, this.canvas.height);
 
-    this.textureUnit = 0;
+    this.textureUnit = -1;
 
     this.elements = [];
 
     /**
-     * A sub-object with helpful matrix math functions (only 4*4 matrices)
+     * A sub-object with helpful matrix math functions
      * @type {{}}
      */
     this.MatrixMath = {
         /**
-         * creates a matrix to translate
-         * @param {number} tx in x direction
-         * @param {number} ty in y direction
-         * @param {number} tz in z direction
+         * Generates a translation matrix
+         * @param {number} tx 
+         * @param {number} ty 
+         * @param {number} tz 
          * @returns {Array&lt;number>}
          */
         translation: function (tx, ty, tz) {
@@ -61,9 +62,9 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * creates a matrix to rotate around the x-axis
+         * Generates a rotation matrix (rotation around x-axis)
          * @param {number} angleInRadians 
-         * @returns {Array&lt;number>}
+         * @returns {Array&lt;Number>}
          */
         xRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
@@ -78,9 +79,9 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * creates a matrix to rotate around the y-axis
+         * Generates a rotation matrix (rotation around y-axis)
          * @param {number} angleInRadians 
-         * @returns {Array&lt;number>}
+         * @returns {Array&lt;Number>}
          */
         yRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
@@ -95,9 +96,9 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * creates a matrix to rotate around the z-axis
+         * Generates a rotation matrix (rotation around z-axis)
          * @param {number} angleInRadians 
-         * @returns {Array&lt;number>}
+         * @returns {Array&lt;Number>}
          */
         zRotation: function (angleInRadians) {
             var c = Math.cos(angleInRadians);
@@ -112,10 +113,10 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * creates a matrix to scale
-         * @param {number} sx in x direction
-         * @param {number} sy in y direction
-         * @param {number} sz in z direction
+         * Generates a scaling matrix
+         * @param {number} sx 
+         * @param {number} sy 
+         * @param {number} sz 
          * @returns {Array&lt;number>}
          */
         scaling: function (sx, sy, sz) {
@@ -128,10 +129,10 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * multiplys two matrices
-         * @param {Array&lt;number>} a 
-         * @param {Array&lt;number>} b 
-         * @returns {Array&lt;number>}
+         * Generates a matrix by multiplying 2 matricies
+         * @param {Array&lt;Number>} a 
+         * @param {Array&lt;Number>} b 
+         * @returns {Array&lt;Number>}
          */
         mult: function (a, b) {
             var b00 = b[0 * 4 + 0];
@@ -188,14 +189,14 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * creates a orthographic projection matrix
+         * Generates an orthographic projection matrix
          * @param {number} left 
          * @param {number} right 
          * @param {number} bottom 
          * @param {number} top 
          * @param {number} near 
          * @param {number} far 
-         * @returns {Array&lt;number>}
+         * @returns {Array&lt;Number>}
          */
         orthographic: function (left, right, bottom, top, near, far) {
             return [
@@ -211,12 +212,12 @@ function WebGlContext(canvas) {
         },
 
         /**
-         * creates a perspective projection matrix
+         * Generates an perspective projection matrix
          * @param {number} fieldOfViewInRadians 
-         * @param {numer} aspect ratio between width and height of target
+         * @param {numer} aspect 
          * @param {number} near 
          * @param {number} far 
-         * @returns {Array&lt;number>}
+         * @returns {Array&lt;Number>}
          */
         perspective: function (fieldOfViewInRadians, aspect, near, far) {
             var f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewInRadians);
@@ -232,7 +233,7 @@ function WebGlContext(canvas) {
     };
 
     /**
-     * adjusts the screen so it renders properly to the canvas
+     * Adjusts the context so it renders properly to the canvas (shouldn't be called when target is not canvas)
      */
     this.adjustScreen = function () {
         this.c = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
@@ -240,7 +241,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * sets the background/clear color
+     * Sets the clear/backround-color
      * @param {number} r red
      * @param {number} g green
      * @param {number} b blue
@@ -251,35 +252,35 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * enables depthtesting
+     * Enables depthtesting
      */
     this.enableDepthtest = function () {
         this.c.enable(this.c.DEPTH_TEST);
     }
 
     /**
-     * disables depthtesting
+     * Disables depthtesting
      */
     this.disableDepthtest = function () {
         this.c.disable(this.c.DEPTH_TEST);
     }
 
     /**
-     * enables cullface
+     * Enables cullface
      */
     this.enableCullface = function () {
         this.c.enable(this.c.CULL_FACE);
     }
 
     /**
-     * disables cullface
+     * Disables cullface
      */
     this.disableCullface = function () {
         this.c.disable(this.c.CULL_FACE);
     }
 
     /**
-     * clears the current target
+     * Clears the target
      */
     this.clear = function () {
         this.c.clear(this.c.COLOR_BUFFER_BIT);
@@ -288,9 +289,9 @@ function WebGlContext(canvas) {
 
 
     /**
-     * creates a JSON with all the needed information for an attribute
-     * @param {String} name name in shader
-     * @param {number} size size of vector
+     * Creates a JSON with the needed information for an attribute used by the vertexshader
+     * @param {String} name 
+     * @param {number} size 
      * @returns {{}}
      */
     this.createAttribute = function (name, size) {
@@ -301,9 +302,9 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * creates a JSON with all the needed information for an uniform
-     * @param {String} name name in shader
-     * @param {String} type type in shader
+     * Creates a JSON with the needed information for an uniform used by the shaders
+     * @param {String} name 
+     * @param {String} type 
      * @returns {{}}
      */
     this.createUniform = function (name, type) {
@@ -316,7 +317,18 @@ function WebGlContext(canvas) {
                 height: 0,
                 data: null,
                 texture: this.c.createTexture(),
-                value: this.textureUnit,
+                value: this.textureUnit
+            };
+        } else if(type == "samplerCube"){
+            this.textureUnit += 1;
+            return {
+                name: name,
+                type: type,
+                width: 0,
+                height: 0,
+                data: null,
+                texture: this.c.createTexture(),
+                value: this.textureUnit
             };
         } else {
             return {
@@ -328,8 +340,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * sets a texture to an image
-     * @param {{}} uniform uniform of type sampler2D
+     * Sets the texture of an uniform (smapler2D) to an image
+     * @param {{}} uniform 
      * @param {String} imageUrl 
      */
     this.setTextureToImage = function (uniform, imageUrl) {
@@ -356,14 +368,15 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * sets a texture to a given data
-     * @param {{}} uniform uniform of type sampler2D
-     * @param {number} width width of data
-     * @param {number} height height of data
-     * @param {Array&lt;number>} data data containing RGBA values between 0 and 255 (4 values per data-point)
+     * Sets the texture of an uniform (smapler2D) to supplied data
+     * @param {{}} uniform 
+     * @param {number} width 
+     * @param {number} height 
+     * @param {Array&lt;Number>} data RGBA integer values [0;255]
      */
     this.setTexture = function (uniform, width, height, data){
         this.c.bindTexture(this.c.TEXTURE_2D, uniform.texture);
+
         this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
         uniform.width = width;
         uniform.height = height;
@@ -381,7 +394,130 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * creates a JSON with all the needed information for a camera
+     * Sets the texture of a side of an uniform (smaplerCube) to an image
+     * @param {{}} uniform 
+     * @param {String} side &lt;+/->&lt;x/y/z>
+     * @param {String} imageUrl 
+     */
+    this.setCubeSideToImage = function(uniform, side, imageUrl){        
+        var image = new Image();
+        if ((new URL(imageUrl, window.location.href)).origin !== window.location.origin) {
+            image.crossOrigin = "";
+        }
+        image.src = imageUrl;
+        image.c = this.c;
+        image.side = side;
+        image.uniform = uniform;
+        
+        image.onload = function(){
+            this.uniform.width = this.width;
+            this.uniform.height = this.height;
+            this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, this.uniform.texture);
+            
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
+            this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
+
+            var target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+            var s = side.toLocaleLowerCase();
+            switch(s){
+                case "x":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                    break;
+                case "+x":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                    break;
+                case "-x":
+                    target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_X;
+                    break;
+                case "y":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                    break;
+                case "+y":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                    break;
+                case "-y":
+                    target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+                    break;
+                case "z":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                    break;
+                case "+z":
+                    target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                    break;
+                case "-z":
+                    target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+                    break;
+            }
+
+            this.c.texImage2D(target, 0, this.c.RGBA, this.c.RGBA, this.c.UNSIGNED_BYTE, this);
+        }
+    }
+
+    /**
+     * Sets the texture of a side of an uniform (smaplerCube) to supplied data
+     * @param {{}} uniform 
+     * @param {String} side &lt;+/->&lt;x/y/z>
+     * @param {number} width 
+     * @param {Array&lt;Number>} data 
+     */
+    this.setCubeSide = function(uniform, side, width, height, data){        
+        this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, uniform.texture);
+
+        this.c.pixelStorei(this.c.UNPACK_ALIGNMENT, 1);
+        
+        if(uniform.width != 0 &amp;&amp; uniform.height != 0){
+            if(width != uniform.width || height != uniform.height){
+                console.log("textures in samplerCube need to be of same size!");
+            }
+        }else{
+            uniform.width = width;
+            uniform.height = height;
+        }
+        
+        var target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+        var s = side.toLocaleLowerCase();
+        switch(s){
+            case "x":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                break;
+            case "+x":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_X;
+                break;
+            case "-x":
+                target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_X;
+                break;
+            case "y":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                break;
+            case "+y":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Y;
+                break;
+            case "-y":
+                target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Y;
+                break;
+            case "z":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                break;
+            case "+z":
+                target = this.c.TEXTURE_CUBE_MAP_POSITIVE_Z;
+                break;
+            case "-z":
+                target = this.c.TEXTURE_CUBE_MAP_NEGATIVE_Z;
+                break;
+        }
+
+        this.c.texImage2D(target, 0, this.c.RGBA, width, height, 0, this.c.RGBA, this.c.UNSIGNED_BYTE, new Uint8Array(data));
+
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MIN_FILTER, this.c.NEAREST);
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_MAG_FILTER, this.c.NEAREST);
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_S, this.c.CLAMP_TO_EDGE);
+        this.c.texParameteri(this.c.TEXTURE_CUBE_MAP, this.c.TEXTURE_WRAP_T, this.c.CLAMP_TO_EDGE);
+    }
+
+    /**
+     * Creates a JSON with the needed information for a Camera
      * @returns {{}}
      */
     this.createCamera = function () {
@@ -397,7 +533,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * creates a JSON with all the needed information for an element
+     * Creates a JSON with the needed information for an Element
      * @returns {{}}
      */
     this.createElement = function () {
@@ -418,7 +554,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * adds shaders to an element so it can get rendered
+     * Compiles the vertex and fragment shader and adds them to the element
      * @param {{}} element 
      * @param {String} vertexShaderSrc 
      * @param {String} fragmentShaderSrc 
@@ -428,8 +564,8 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * adds an element to the internal list of elements, so it can be easily rendered with the function renderFrame()
-     * @param {{}} element
+     * Adds the element to the internal list of elements so it can be easily rendered using renderFrame()
+     * @param {{}} element 
      */
     this.addElement = function(element){
         if(!this.elements.includes(element)){
@@ -438,7 +574,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * removes an element form the internal list of elements
+     * Removes the element from the internal list of elements so it won't be rendered using renderFrame()
      * @param {{}} element 
      * @returns {boolean}
      */
@@ -453,7 +589,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * renders a specific element to the target (default canvas)
+     * Renders an specific element to the target (usually canvas)
      * @param {{}} element 
      */
     this.renderElement = function (element) {
@@ -466,16 +602,16 @@ function WebGlContext(canvas) {
 
             switch (element.uniforms[i].type) {
                 case "float":
-                    this.c.uniform1fv(uniformLocation, [v]);
+                    this.c.uniform1f(uniformLocation, uniform);
                     break;
                 case "vec2":
-                    this.c.uniform2fv(uniformLocation, [v0, v1]);
+                    this.c.uniform2fv(uniformLocation, new Float32Array(uniform));
                     break;
                 case "vec3":
-                    this.c.uniform3fv(uniformLocation, [v0, v1, v2]);
+                    this.c.uniform3fv(uniformLocation, new Float32Array(uniform));
                     break;
                 case "vec4":
-                    this.c.uniform4fv(uniformLocation, [v0, v1, v2, v4]);
+                    this.c.uniform4fv(uniformLocation, new Float32Array(uniform));
                     break;
                 case "mat2":
                     this.c.uniformMatrix2fv(uniformLocation, this.c.FALSE, new Float32Array(uniform));
@@ -487,22 +623,24 @@ function WebGlContext(canvas) {
                     this.c.uniformMatrix4fv(uniformLocation, this.c.FALSE, new Float32Array(uniform));
                     break;
                 case "int":
-                    this.c.uniform1iv(uniformLocation, [v]);
+                    this.c.uniform1i(uniformLocation, uniform);
                     break;
                 case "ivec2":
-                    this.c.uniform2iv(uniformLocation, [v0, v1]);
+                    this.c.uniform2iv(uniformLocation, new Int32Array(uniform));
                     break;
                 case "ivec3":
-                    this.c.uniform3iv(uniformLocation, [v0, v1, v2]);
+                    this.c.uniform3iv(uniformLocation, new Int32Array(uniform));
                     break;
                 case "ivec4":
-                    this.c.uniform4iv(uniformLocation, [v0, v1, v2, v4]);
+                    this.c.uniform4iv(uniformLocation, new Int32Array(uniform));
                     break;
                 case "sampler2D":
-                    this.c.uniform1i(uniformLocation, new Float32Array(uniform));
+                    this.c.uniform1i(uniformLocation, uniform);
+                    this.bindTexture(element.uniforms[i], uniform);
                     break;
                 case "samplerCube":
-                    this.c.uniform1iv(uniformLocation, [v]);
+                    this.c.uniform1i(uniformLocation, uniform);
+                    this.bindTexture(element.uniforms[i], uniform);
             }
         }
 
@@ -515,7 +653,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * renders all the elements stored in the internal list of elements to the target (default canvas)
+     * Renders all elements which were added using addElement to the target (usually canvas)
      */
     this.renderFrame = function () {
         for (var i = 0; i &lt; this.elements.length; i++) {
@@ -524,8 +662,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * sets the target to render to (null if canvas)
-     * all testures get unbound, to ensure that no errors occur
+     * Sets a new target to render to and unbinds all textures so an texture is not used as input and output at once. Default target is canvas. To render to canvas pass null as an parameter.
      * @param {{}} uniformTexture 
      */
     this.setTarget = function(uniformTexture){
@@ -534,8 +671,8 @@ function WebGlContext(canvas) {
             this.c.bindRenderbuffer(this.c.RENDERBUFFER, null);
             this.adjustScreen();
         }else{
-            for(var i=0;i&lt;32;i++){
-                this.bindTexture(i, null);
+            for(var i=0;i&lt;=this.textureUnit;i++){
+                this.bindTexture(null, i);
             }
             var frameBuffer = this.c.createFramebuffer();
             this.c.bindFramebuffer(this.c.FRAMEBUFFER, frameBuffer);
@@ -551,22 +688,28 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * binds a testure to a specific id, so it can be used by the shaders of an element
-     * @param {number} textureId id between 0 and 31
+     * Binds (or unbinds) an texture (textureId should be the value of the uniform). Unbinds texture if uniformTexture is null.
+     * @param {number} textureId 
      * @param {{}} uniformTexture 
      */
-    this.bindTexture = function(textureId, uniformTexture){
-        var activeTexture = eval("this.c.TEXTURE" + textureId);
-        this.c.activeTexture(activeTexture);
+    this.bindTexture = function(uniformTexture, textureId){
         if(uniformTexture === null){
+            var activeTexture = this.c.TEXTURE0 + textureId;
+            this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, null);
-        }else{
+        }else if(uniformTexture.type == "sampler2D"){
+            var activeTexture = this.c.TEXTURE0 + uniformTexture.value;
+            this.c.activeTexture(activeTexture);
             this.c.bindTexture(this.c.TEXTURE_2D, uniformTexture.texture);
+        }else if(uniformTexture.type == "samplerCube"){
+            var activeTexture = this.c.TEXTURE0 + uniformTexture.value;
+            this.c.activeTexture(activeTexture);
+            this.c.bindTexture(this.c.TEXTURE_CUBE_MAP, uniformTexture.texture);
         }
     }
 
     /**
-     * creates a shader using the source-code
+     * Creates a Shader
      * @param {String} src 
      * @param {number} type 
      */
@@ -583,7 +726,7 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * creates a shaderprogram from a vertex-shader and fragment-shader source-code
+     * Creates a ShaderProgram
      * @param {String} vertexShaderSrc 
      * @param {String} fragmentShaderSrc 
      */
@@ -606,11 +749,11 @@ function WebGlContext(canvas) {
     }
 
     /**
-     * creates the buffers needed to render an element
+     * Creates the neccecary buffers for an render-call
      * @param {Program} program 
-     * @param {Array&lt;number>} vertices 
-     * @param {Array&lt;JSON>} attributes 
-     * @param {Array&lt;number>} indicies 
+     * @param {Array&lt;Number>} vertices 
+     * @param {Array&lt;{}>} attributes 
+     * @param {Array&lt;Number>} indicies 
      */
     this.createBuffers = function (program, vertices, attributes, indicies) {
         var vertexBuffer = this.c.createBuffer();
@@ -651,7 +794,7 @@ function WebGlContext(canvas) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Mon Aug 17 2020 15:42:21 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.5</a> on Sat Aug 22 2020 12:20:09 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>
