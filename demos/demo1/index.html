@@ -2,20 +2,20 @@
 <html>
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width" />
-    <title>WebGl-Library - demo 1</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width" />
+	<title>WebGl-Library - demo 1</title>
 	<link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
 
-    <div id="background">
+	<div id="background">
 		<a id="link" href="https://github.com/htcryme/WebGl-Library/tree/master/demos/demo1">to the code</a>
-        <canvas id="canvas"></canvas>
-    </div>
+		<canvas id="canvas"></canvas>
+	</div>
 
-    <script id="vertexShader" type="x-shader/x-fragment">
+	<script id="vertexShader" type="x-shader/x-fragment">
 		precision mediump float;
 
 		attribute vec2 vertPosition;
@@ -29,7 +29,7 @@
 			gl_Position = projectionMatrix * vec4(vertPosition, 1.0, 1.0);
 		}
 	</script>
-    <script id="fragmentShader" type="x-shader/x-fragment">
+	<script id="fragmentShader" type="x-shader/x-fragment">
 		precision mediump float;
 		
 		varying vec3 fragColor;
@@ -40,8 +40,8 @@
 	</script>
 
 	<script type="text/javascript" src="https://htcryme.github.io/WebGl-Library/src/WebGl-Library.js"></script>
-    <!--script type="text/javascript" src="/src/WebGl-Library.js"></script-->
-    <script type="text/javascript" src="script.js"></script>
+	<!--script type="text/javascript" src="/src/WebGl-Library.js"></script-->
+	<script type="text/javascript" src="script.js"></script>
 </body>
 
 </html>
