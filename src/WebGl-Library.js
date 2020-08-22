@@ -431,7 +431,8 @@ function WebGlContext(canvas) {
      * Sets the texture of a side of an uniform (smaplerCube) to supplied data
      * @param {{}} uniform 
      * @param {String} side <+/-><x/y/z>
-     * @param {number} width 
+     * @param {number} width same as height
+     * @param {number} height same as width
      * @param {Array<Number>} data 
      */
     this.setCubeSide = function(uniform, side, width, height, data){        
