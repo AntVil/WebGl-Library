@@ -25,4 +25,5 @@ body{
 	top: 15px;
 	transform: translate(-50%, -50%);
 	color: #FFFFFF;
+	z-index: 1;
 }
