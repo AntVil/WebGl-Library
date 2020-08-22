@@ -689,7 +689,7 @@ function WebGlContext(canvas) {
      * Creates the neccecary buffers for an render-call
      * @param {Program} program 
      * @param {Array<Number>} vertices 
-     * @param {{}[]} attributes 
+     * @param {Array<{}>} attributes 
      * @param {Array<Number>} indicies 
      */
     this.createBuffers = function (program, vertices, attributes, indicies) {
